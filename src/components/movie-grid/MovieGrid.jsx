@@ -10,6 +10,58 @@ import Button, { OutlineButton } from '../button/Button';
 import Input from '../input/Input'
 
 import tmdbApi, { category, movieType, tvType } from '../../api/tmdbApi';
+import { movieSearch } from '../../api/PostApiService';
+
+
+
+function AutoComplete() {
+    const [inputValue, setInputValue] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+    const navigate = useNavigate();
+  
+    const autoComplete = async () => {
+      if (inputValue.length >= 3) {
+        try {
+          const response = await movieSearch(inputValue)
+          const data = response.data;
+          setSuggestions(data);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        setSuggestions([]);
+      }
+    };
+  
+    return (
+      <div>
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyUp={autoComplete}
+          placeholder="검색어를 입력하세요..."
+        />
+        <ul>
+            {suggestions.map((suggestion) => (
+            <li key={suggestion.id}>
+                {/* 클릭 시 navigate 함수를 사용하여 페이지 이동 */}
+                <a
+                href={`/movie/${suggestion.id}`}
+                onClick={(e) => {
+                    e.preventDefault(); // 기본 링크 동작을 막습니다.
+                    navigate(`/movie/${suggestion.id}`); // 페이지 이동
+                }}
+                >
+                {suggestion.title}
+                </a>
+            </li>
+            ))}
+        </ul>
+      </div>
+    );
+  }
+
 
 const MovieGrid = props => {
 
@@ -70,23 +122,23 @@ const MovieGrid = props => {
 
     return (
         <>
-            <div className="section mb-3">
-                <MovieSearch category={props.category} keyword={keyword}/>
+          <div className="section mb-3">
+            <MovieSearch category={props.category} keyword={keyword} />
+          </div>
+          <div className="movie-grid">
+            {items.map((item, i) => (
+              <MovieCard category={props.category} item={item} key={i} />
+            ))}
+          </div>
+          {page < totalPage ? (
+            <div className="movie-grid__loadmore">
+              <OutlineButton className="small" onClick={loadMore}>
+                Load more
+              </OutlineButton>
             </div>
-            <div className="movie-grid">
-                {
-                    items.map((item, i) => <MovieCard category={props.category} item={item} key={i}/>)
-                }
-            </div>
-            {
-                page < totalPage ? (
-                    <div className="movie-grid__loadmore">
-                        <OutlineButton className="small" onClick={loadMore}>Load more</OutlineButton>
-                    </div>
-                ) : null
-            }
+          ) : null}
         </>
-    );
+      );
 }
 
 const MovieSearch = props => {
@@ -119,15 +171,14 @@ const MovieSearch = props => {
 
     return (
         <div className="movie-search">
-            <Input
-                type="text"
-                placeholder="Enter keyword"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-            />
-            <Button className="small" onClick={goToSearch}>Search</Button>
+          {/* AutoComplete 컴포넌트를 추가 */}
+          <AutoComplete />
+
+          <Button className="small" onClick={goToSearch}>
+            Search
+          </Button>
         </div>
-    )
+      );
 }
 
 export default MovieGrid;
