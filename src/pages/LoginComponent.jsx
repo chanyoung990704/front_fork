@@ -28,6 +28,7 @@ export default function LoginComponent(){
     async function handleSubmit(){
         if(await authContext.login(email, password)){
             navigate('/')
+            window.location.reload()
         }
         else{
             setShowFailMessage(true)
@@ -48,7 +49,7 @@ export default function LoginComponent(){
             <div className="Login center bottom">
           {showFailMessage && <div className="errorMessage">Authentication Failed!!</div>}
           <div className="LoginForm">
-            <h2 className='bottom'>Sign in</h2>
+            {!showFailMessage && <h2 className='bottom'>Sign in</h2>}
             <div className='bottom'>
               <label>Email          :</label>
               <input type="email" name="email" value={email} onChange={handleEmailChange} />
