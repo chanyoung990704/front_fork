@@ -64,6 +64,7 @@ function SignupForm() {
             type="text"
             id="name"
             name="name"
+            placeholder='length 2 ~ 10'
             value={formData.name}
             onChange={handleChange}
             required
@@ -78,6 +79,7 @@ function SignupForm() {
             name="email"
             value={formData.email}
             onChange={handleChange}
+            placeholder='test@email.com'
             required
             className="form-control" // Bootstrap 클래스 추가
           />
@@ -88,6 +90,7 @@ function SignupForm() {
             type="password"
             id="password"
             name="password"
+            placeholder='length 8 ~ 20'
             value={formData.password}
             onChange={handleChange}
             required
