@@ -72,7 +72,7 @@ const Detail = () => {
                                 {errorMessage && <div className='error-message'>{errorMessage}</div>}
                                 {!errorMessage && successMessage && <div className="success-message">{successMessage}</div>}
                                 <div className="genres">
-                                    {isAuthenticated && <button onClick={() => likeIt(item.id)}>LikeIt!</button>}
+                                    {isAuthenticated && <button onClick={() => likeIt(item.id)} className="btn btn-primary">LikeIt!</button>}
                                     {
                                         item.genres && item.genres.slice(0, 5).map((genre, i) => (
                                             <span key={i} className="genres__item">{genre.name}</span>
