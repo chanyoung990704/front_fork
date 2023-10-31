@@ -9,7 +9,7 @@ import CastList from './CastList';
 import VideoList from './VideoList';
 
 import MovieList from '../../components/movie-list/MovieList';
-import { likes } from '../../api/PostApiService';
+import { likes, dislikes, getUserLikedMovies } from '../../api/PostApiService';
 import { useAuth } from '../AuthContext';
 
 const Detail = () => {
@@ -17,15 +17,23 @@ const Detail = () => {
     const { category, id } = useParams();
 
     const [item, setItem] = useState(null);
-
-    const [successMessage, setSuccessMessage] = useState('');
+    const [userLikedMovies, setUserLikedMovies] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
 
 
     const authContext = useAuth()
     const isAuthenticated = authContext.isAuthenticated
     
-    
+    const fetchUserLikedMovies = async () => {
+        if (isAuthenticated) {
+            try {
+                const userMovies = await getUserLikedMovies(); // Replace this with your API call to get user liked movies
+                setUserLikedMovies(userMovies.data);
+            } catch (error) {
+                console.error('Error fetching user liked movies', error);
+            }
+        }
+    };
 
     useEffect(() => {
         const getDetail = async () => {
@@ -37,11 +45,15 @@ const Detail = () => {
     }, [category, id]);
 
 
+    useEffect(() => {
+        fetchUserLikedMovies();
+    }, [isAuthenticated]);
+
+
     async function likeIt(id){
         try {
             const response = await likes(category, id)
-            // 성공적인 응답 처리
-            setSuccessMessage('좋아요 등록 완료!'); // 성공 메시지 설정
+            fetchUserLikedMovies();
 
           } catch (error) {
             if (error.response) {
@@ -53,6 +65,23 @@ const Detail = () => {
               setErrorMessage('서버와 통신 중 문제가 발생했습니다.');
             }
           }
+    }
+
+
+    async function dislikeIt(id) {
+        try {
+            const response = await dislikes(category, id);
+            fetchUserLikedMovies();
+        } catch (error) {
+            if (error.response) {
+                // 서버 응답에서 에러 메시지 추출
+                const errorData = error.response.data;
+                setErrorMessage(errorData);
+            } else {
+                // 네트워크 에러 또는 다른 예외 처리
+                setErrorMessage('서버와 통신 중 문제가 발생했습니다.');
+            }
+        }
     }
 
     return (
@@ -70,10 +99,14 @@ const Detail = () => {
                                     {item.title || item.name}
                                 </h1>
                                 {errorMessage && <div className='error-message'>{errorMessage}</div>}
-                                {!errorMessage && successMessage && <div className="success-message">{successMessage}</div>}
                                 <div className="genres">
-                                    {isAuthenticated && <button onClick={() => likeIt(item.id)} className="btn btn-primary">LikeIt!</button>}
-                                    {
+                                {isAuthenticated && (
+                                    userLikedMovies.includes(item.id) ? (
+                                        <button onClick={() => dislikeIt(item.id)} className="btn btn-danger">Dislike!</button>
+                                    ) : (
+                                        <button onClick={() => likeIt(item.id)}  className="btn btn-primary">LikeIt!</button>
+                                    )
+                                )}                                    {
                                         item.genres && item.genres.slice(0, 5).map((genre, i) => (
                                             <span key={i} className="genres__item">{genre.name}</span>
                                         ))
