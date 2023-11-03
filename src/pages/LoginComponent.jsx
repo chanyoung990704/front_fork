@@ -52,12 +52,12 @@ export default function LoginComponent(){
             {!showFailMessage && <h2 className='bottom'>Sign in</h2>}
             <div className='bottom'>
               <label>Email          :</label>
-              <input type="email" name="email" value={email} onChange={handleEmailChange} />
+              <input type="email" name="email" placeholder='yourEmail@email.com' value={email} onChange={handleEmailChange} />
             </div>
  
             <div className='bottom'>
               <label>Password   :</label>
-              <input type="password" name="password" value={password} onChange={handlePasswordChange} />
+              <input type="password" name="password" placeholder='*******' value={password} onChange={handlePasswordChange} />
             </div>
             <div className="buttonContainer">
               <button type="button" name="login" onClick={handleSubmit} className="btn btn-primary">

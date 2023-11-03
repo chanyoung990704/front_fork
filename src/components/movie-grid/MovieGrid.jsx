@@ -47,10 +47,10 @@ function AutoComplete() {
             <li key={suggestion.id}>
                 {/* 클릭 시 navigate 함수를 사용하여 페이지 이동 */}
                 <a
-                href={`/movie/${suggestion.id}`}
+                href={`/movie/${suggestion.tmdbId}`}
                 onClick={(e) => {
                     e.preventDefault(); // 기본 링크 동작을 막습니다.
-                    navigate(`/movie/${suggestion.id}`); // 페이지 이동
+                    navigate(`/movie/${suggestion.tmdbId}`); // 페이지 이동
                 }}
                 >
                 {suggestion.title}
