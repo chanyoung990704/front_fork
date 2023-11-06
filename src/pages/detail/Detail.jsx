@@ -22,31 +22,11 @@ const Detail = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
     const authContext = useAuth()
     const isAuthenticated = authContext.isAuthenticated
-    
-    //tmdb에서 데이터 가져오기
-    useEffect(() => {
-        const getDetail = async () => {
-            const response = await tmdbApi.detail(category, id, {params:{}});
-            setItem(response);
-            window.scrollTo(0,0);
-        }
-        getDetail();
-    }, [category, id]);
-
-    //사용자의 좋아요 목록 가져오기
-    useEffect(() => {
-        fetchUserLikedMovies();
-    }, [isAuthenticated]);
-
-    //게시글의 댓글 목록 가져오기
-    useEffect(() => {
-        if (item && item.id) {
-            fetchComments(item.id); // 여기서 item.id를 인수로 전달
-        }
-    }, [item]);
 
     //사용자 좋아요 목록 가져오는 함수
     const fetchUserLikedMovies = useCallback(async () => {
@@ -70,7 +50,7 @@ const Detail = () => {
             handleError(error); // 에러 처리를 위한 새로운 함수
           }
         }
-      }, [isAuthenticated]);
+      }, [isAuthenticated, category, fetchUserLikedMovies]);
 
       //좋아요 취소 함수
       const dislikeIt = useCallback(async (id) => {
@@ -82,33 +62,43 @@ const Detail = () => {
             handleError(error); // 에러 처리를 위한 새로운 함수
           }
         }
-      }, [isAuthenticated]);
+      }, [isAuthenticated, category, fetchUserLikedMovies]);
 
 
     //댓글 작성 함수
-    const fetchComments = async (movieId) => {
+    const fetchComments = async (movieId, page) => {
         try {
-            const response = await getMovieComment(movieId);
+            const response = await getMovieComment(movieId, page);
             console.log(response);
             // 가정: response.data가 댓글 배열을 포함하는 객체일 경우
-            if(response.data)
-                setComments(response.data.slice(0, 10)); // 슬라이스 ? 서버에서 작동하게 해도 되는데..
+            if(response.data.comments){
+                setComments(response.data.comments);
+                setTotalPages(response.data.totalPages);
+            }
             else
                 setComments([])
         } catch (error) {
             console.error('댓글을 가져오는 중 오류가 발생했습니다:', error);
             setErrorMessage('댓글을 가져오는데 실패했습니다.');
         }
-    };
+     };
+
+      // 페이지 번호를 클릭했을 때 호출될 함수
+    const handlePageClick = (event) => {
+        const newPage = Number(event.target.id);
+        setCurrentPage(newPage);
+        fetchComments(id, newPage);
+     };
+
     
     //작성한 댓글 서버에 등록하는 함수
     const handleCommentSubmit = async () => {
         if (!newComment.trim()) return; // 빈 댓글을 방지합니다.
         try {
             // 서버로 새 댓글을 보내는 API를 호출합니다.
-            await postMovieComment(item.id, newComment); // id는 현재 영화의 ID입니다.
+            await postMovieComment(id, newComment); // id는 현재 영화의 ID입니다.
             setNewComment(''); // 입력 필드 초기화합니다.
-            fetchComments(item.id); // 댓글 목록을 새로고침합니다.
+            fetchComments(id, totalPages - 1); // 댓글 목록을 새로고침합니다.
         } catch (error) {
             console.error('댓글을 등록하는데 실패했습니다.', error);
             setErrorMessage('댓글을 등록하는데 실패했습니다.');
@@ -174,8 +164,40 @@ const Detail = () => {
             </div>
         </div>
       ));
-        
 
+    //페이지 번호 버튼을 생성합니다.
+    const pageNumbers = [];
+    for (let i = 0; i < totalPages; i++) {
+        pageNumbers.push(
+            <button
+                key={i}
+                id={i}
+                className={`pagination__button ${currentPage === i ? 'active' : ''}`}
+                onClick={handlePageClick}>
+                {i + 1}
+            </button>
+        );
+    }
+    //tmdb에서 데이터 가져오기
+    useEffect(() => {
+        const getDetail = async () => {
+            const response = await tmdbApi.detail(category, id, {params:{}});
+            setItem(response);
+            window.scrollTo(0,0);
+        }
+        getDetail();
+    }, [category, id]);
+    
+    //사용자의 좋아요 목록 가져오기
+    useEffect(() => {
+        fetchUserLikedMovies();
+    }, [isAuthenticated, fetchUserLikedMovies]);
+    
+    //게시글의 댓글 목록 가져오기
+    useEffect(() => {
+            fetchComments(id, 0); // 여기서 item.id를 인수로 전달
+    }, [id]);
+    
     
     return (
         <>
@@ -217,6 +239,9 @@ const Detail = () => {
                                         {comments.map((comment, index) => (
                                             <div key={index} className="comment-item">{comment}</div>
                                         ))}
+                                    </div>
+                                    <div className='pagination'>
+                                        {pageNumbers}
                                     </div>
                                     {isAuthenticated && (
                                         <div className="comments__form">
