@@ -114,3 +114,64 @@
         margin-bottom: 1.5rem;
     }
 }
+
+
+.comments__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.comment-item {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    &:last-child {
+        border-bottom: none;
+    }
+    &:hover {
+        background-color: #f8f8f8;
+    }
+}
+
+
+.comments__form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; // 버튼과 텍스트 영역 사이 간격 조정
+  }
+  
+  .comments__form textarea {
+    width: 100%; // 전체 너비 사용
+    padding: 15px; // 안쪽 여백
+    border-radius: 8px; // 둥근 모서리
+    border: 1px solid #ccc; // 경계선 색
+    background-color: #181818; // 배경 색
+    color: #fff; // 글자 색
+    font-size: 16px; // 글자 크기
+    resize: none; // 크기 조절 불가능하게 설정
+  }
+  
+  .comments__form button {
+    padding: 10px 20px; // 상하 10px, 좌우 20px 여백
+    border: none; // 경계선 없음
+    border-radius: 20px; // 둥근 모서리
+    background-color: #E50914; // Netflix 빨간색
+    color: #fff; // 글자 색
+    font-size: 16px; // 글자 크기
+    cursor: pointer; // 마우스 오버 시 커서 변경
+    transition: background-color 0.3s ease; // 배경 색 변경 애니메이션
+  
+    &:hover {
+      background-color: #f40612; // 마우스 오버 시 배경 색
+    }
+  
+    &:focus {
+      outline: none; // 클릭 시 외곽선 제거
+    }
+  }
+  
+  // 에러 메시지 스타일
+  .error-message {
+    color: #e87c03; // 에러 메시지 색상
+    margin-top: 10px; // 메시지와 입력란 사이 간격
+  }
