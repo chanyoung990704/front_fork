@@ -7,9 +7,9 @@ export const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export default function AuthProvider({ children }) {
-  const [isAuthenticated, setAuthenticate] = useState(false);
-  const [email, setEmail] = useState(null);
-  const [token, setToken] = useState(null);
+  const [isAuthenticated, setAuthenticate] = useState(!!localStorage.getItem("token"));
+  const [email, setEmail] = useState(localStorage.getItem("email"));
+  const [token, setToken] = useState(localStorage.getItem("token"));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
