@@ -1,1 +1,81 @@
 /* SignupForm.css */
+/* Dark Mode Background */
+.signup-form {
+    color: white;
+  }
+  
+  /* Bold Font Style for Headers and Labels */
+  .signup-form h2 {
+    font-weight: bold;
+  }
+  
+  .signup-form label {
+    font-weight: bold;
+  }
+  
+  /* Button Styles */
+  .btn-primary {
+    background-color: #E50914;
+    border: none;
+  }
+  
+  .btn-secondary {
+    background-color: #757575;
+  }
+  
+  /* Form Elements Style */
+  .form-control {
+    background-color: #333;
+    border: none;
+    color: white;
+  }
+  
+  /* Optional: Animation and Transition Effects */
+  .btn:hover {
+    opacity: 0.8;
+    transition: opacity 0.3s;
+  }
+  
+/* Confirmation Dialog Styles */
+.confirmation-dialog {
+    position: fixed;
+    bottom: 20px; /* 화면 하단에서의 거리 */
+    left: 50%;
+    transform: translateX(-50%); /* 수평 중앙 정렬 */
+    background-color: #141414;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+  }
+  
+  .confirmation-dialog p {
+    color: white;
+    text-align: center;
+    font-size: 16px;
+  }
+  
+  /* Button Styles */
+  .confirmation-dialog .primary {
+    background-color: #E50914;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    margin-right: 10px;
+  }
+  
+  .confirmation-dialog .secondary {
+    background-color: #757575;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px; /* 모서리 둥글게 */
+  }
+  
+  /* Mouse Over Effects */
+  .confirmation-dialog button:hover {
+    opacity: 0.8;
+  }

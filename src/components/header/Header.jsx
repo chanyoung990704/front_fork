@@ -14,10 +14,6 @@ const headerNav = [
     {
         display: 'Movies',
         path: '/movie'
-    },
-    {
-        display: 'TV Series',
-        path: '/tv'
     }
 
 ];
@@ -59,8 +55,11 @@ const Header = () => {
                             <Link to={e.path}>{e.display}</Link>
                         </li>
                     ))}
+
+                    <li className="nav-item fs-5">
+                            {isAuthenticated && <Link className="nav-link" to="/movieRecommend">Recommend</Link>}
+                    </li>
     
-                    {/* 조건부 렌더링: 로그인 상태에 따라 다른 내비게이션 메뉴 표시 */}
                     <li className="nav-item fs-5">
                             {!isAuthenticated && <Link className="nav-link" to="/login">Login</Link>}
                     </li>

@@ -1,0 +1,42 @@
+.movie-form-container {
+  position: relative; /* 필요하다면 z-index와 함께 조정 */
+  z-index: 10;
+  padding: 200px;
+  background-color: #141414; /* 넷플릭스 스타일 배경 색 */
+  color: white; /* 텍스트 색상 */
+}
+
+.movie-form {
+  max-width: 600px;
+  margin: auto;
+}
+
+.movie-form h2 {
+  text-align: center;
+}
+
+.loading {
+  text-align: center;
+  color: white;
+}
+
+.movieFormInput,
+.movieFormSelect,
+.movieFormButton {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: none;
+}
+
+
+button {
+  background-color: red; /* 넷플릭스 스타일 버튼 색 */
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #e50914;
+}

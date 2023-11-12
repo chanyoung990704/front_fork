@@ -13,6 +13,7 @@ import Detail from './pages/detail/Detail';
 import LoginComponent from './pages/LoginComponent';
 import AuthProvider, { useAuth } from './pages/AuthContext';
 import SignupForm from './pages/Register';
+import MovieForm from './pages/MovieRecommend';
 
 
 
@@ -68,6 +69,7 @@ function App() {
                     <Route
                         path='/login'
                         element={<>
+                        <Header />
                         <LoginComponent />
                         </>}
                     />
@@ -75,9 +77,18 @@ function App() {
                     <Route
                         path='/register'
                         element={<>
+                        <Header />
                         <SignupForm />
                         </>}
-                    />                    
+                    />  
+                    
+                    <Route
+                        path='/movieRecommend'
+                        element={<>
+                        <Header />
+                        <MovieForm />
+                        </>}
+                    />                  
                 </Routes>
             </BrowserRouter>
       </AuthProvider>
