@@ -49,11 +49,12 @@ const MovieForm = () => {
 
 
   const mainGenres = ['Genre', 'Director']; // 메인 선택: 장르 또는 감독
-  const subGenres = { // 세부 장르 예시
-    'Action': ['Adventure', 'Superhero'],
-    'Comedy': ['Romantic Comedy', 'Satire'],
-    // 다른 장르에 대한 세부 장르를 추가할 수 있습니다.
-  };
+  const genres = [
+    'Thriller', 'Western', 'Adventure', 'Fantasy', 'Drama',
+    '(no genres listed)', 'Animation', 'Action', 'Crime',
+    'Documentary', 'Comedy', 'Sci-Fi', 'War', 'Musical',
+    'Film-Noir', 'Horror', 'Mystery', 'Children', 'Romance', 'IMAX'
+  ];
   const directors = ['Director A', 'Director B', 'Director C']; // 예시 감독
 
   const handleMainSelectionChange = (event) => {
@@ -63,14 +64,15 @@ const MovieForm = () => {
     setSelectedDirector('');
   };
 
-  const handleSubGenreChange = (event) => {
+  const handleGenreChange = (event) => {
     const value = event.target.value;
-    setSelectedGenres(
-      event.target.checked
-        ? [...selectedGenres, value]
-        : selectedGenres.filter((genre) => genre !== value)
-    );
+    const newSelectedGenres = event.target.checked
+      ? [...selectedGenres, value]
+      : selectedGenres.filter((genre) => genre !== value);
+  
+    setSelectedGenres(newSelectedGenres);
   };
+  
 
   const handleDirectorChange = (event) => {
     setSelectedDirector(event.target.value);
@@ -120,11 +122,11 @@ const MovieForm = () => {
 
   return (
     <div className="movie-form-container">
-        {isLoading ? (
-            <div className="loading">Loding...</div>
-        ) : (
+      {isLoading ? (
+        <div className="loading">Loading...</div>
+      ) : (
         <form onSubmit={handleSubmit} className='movie-form'>
-        <h2>영화 추천</h2>
+          <h2>영화 추천</h2>
 
         <div>
             <h3>추천 유형 선택:</h3>
@@ -137,26 +139,30 @@ const MovieForm = () => {
             </select>
         </div>
 
-        {selectionType === 'Genre' && (
-            <div>
-            <h3>세부 장르 선택:</h3>
-            {Object.keys(subGenres).map((genre, index) => (
-                <div key={index}>
-                <strong>{genre}</strong>
-                {subGenres[genre].map((subGenre, subIndex) => (
-                    <label key={subIndex}>
-                    <input
-                        type="checkbox"
-                        value={subGenre}
-                        onChange={handleSubGenreChange}
-                    />
-                    {subGenre}
-                    </label>
-                ))}
-                </div>
-            ))}
-            </div>
-        )}
+      {/* 세부 장르 선택 부분 */}
+      {selectionType === 'Genre' && (
+        <div className="genre-selection">
+          {genres.map((genre, index) => (
+            <React.Fragment key={index}>
+              <input
+                id={`genre-${index}`}
+                type="checkbox"
+                className="genre-checkbox"
+                value={genre}
+                onChange={handleGenreChange}
+                checked={selectedGenres.includes(genre)}
+              />
+              <label
+                htmlFor={`genre-${index}`}
+                className={`genre-label ${selectedGenres.includes(genre) ? 'checked' : ''}`}
+              >
+                {genre}
+              </label>
+            </React.Fragment>
+          ))}
+        </div>
+      )}
+
 
         {selectionType === 'Director' && (
             <div>

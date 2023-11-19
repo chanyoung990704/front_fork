@@ -40,3 +40,52 @@ button {
 button:hover {
   background-color: #e50914;
 }
+
+
+.movie-form-container .genre-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* 체크박스 간의 간격 */
+  margin-bottom: 20px; /* 섹션과 다음 요소 간의 간격 */
+}
+
+.movie-form-container .genre-selection label {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #333; /* 체크박스 배경 색상 */
+  color: #fff; /* 텍스트 색상 */
+  border-radius: 5px; /* 둥근 모서리 */
+}
+
+.movie-form-container .genre-selection input[type="checkbox"] {
+  margin-right: 5px; /* 체크박스와 텍스트 간의 간격 */
+}
+
+/* 체크박스 숨기기 */
+.genre-checkbox {
+  display: none;
+}
+
+.genre-label {
+  display: inline-block;
+  margin: 0 8px 8px 0;
+  padding: 5px 10px;
+  background-color: #333; /* 기본 배경색 */
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer; /* 클릭 가능함을 나타내는 커서 스타일 */
+  transition: background-color 0.2s; /* 배경색 변화 애니메이션 */
+}
+
+/* 체크된 상태일 때의 스타일 */
+.genre-label.checked {
+  background-color: #e50914; /* 체크된 상태의 배경 색상 */
+}
+
+/* 영역의 전체 배경색 변경을 원할 경우 */
+.genre-label.checked::after {
+  content: '✔'; /* 체크 표시 */
+  color: red; /* 체크 표시의 색상 */
+  margin-left: 5px; /* 텍스트와 체크 표시 간의 여백 */
+}
