@@ -13,17 +13,21 @@ import { useAuth } from '../AuthContext';
 
 import './detail.scss';
 
+import { useLikedMovies } from '../LikedMoviesContext';
+
 const Detail = () => {
 
     const { category, id } = useParams();
 
     const [item, setItem] = useState(null);
-    const [userLikedMovies, setUserLikedMovies] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+
+    const { likedMovies, setLikedMovies } = useLikedMovies();
+
 
     const authContext = useAuth()
     const isAuthenticated = authContext.isAuthenticated
@@ -33,12 +37,12 @@ const Detail = () => {
         if (isAuthenticated) {
           try {
             const userMovies = await getUserLikedMovies();
-            setUserLikedMovies(userMovies.data);
-          } catch (error) {
+            setLikedMovies(userMovies.data);
+        } catch (error) {
             handleError(error); // 에러 처리를 위한 새로운 함수
           }
         }
-      }, [isAuthenticated]);
+      }, [isAuthenticated, setLikedMovies]);
 
       //좋아요 등록 함수
       const likeIt = useCallback(async (id) => {
@@ -132,7 +136,7 @@ const Detail = () => {
       );
       
     // 영화 상세 정보
-    const MovieInfo = React.memo(({ item, errorMessage, isAuthenticated, userLikedMovies, likeIt, dislikeIt }) => (
+    const MovieInfo = React.memo(({ item, errorMessage, isAuthenticated, likedMovies, likeIt, dislikeIt }) => (
         <div className="movie-content__info">
             <h1 className="title">
                 {item.title || item.name}
@@ -140,7 +144,7 @@ const Detail = () => {
             {errorMessage && <div className='error-message'>{errorMessage}</div>}
             <div className="genres">
                 {isAuthenticated && (
-                userLikedMovies.includes(item.id) ? (
+                likedMovies.includes(item.id) ? (
                     <button onClick={() => dislikeIt(item.id)} className="btn btn-danger">
                         <FaHeart style={{color : 'white'}}/>
                     </button>
@@ -214,7 +218,7 @@ const Detail = () => {
                                     item={item}
                                     errorMessage={errorMessage}
                                     isAuthenticated={isAuthenticated}
-                                    userLikedMovies={userLikedMovies}
+                                    likedMovies={likedMovies}
                                     likeIt={likeIt}
                                     dislikeIt={dislikeIt}
                                 />

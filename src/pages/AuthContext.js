@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { executeJwtAuthenticationService } from "./AuthenticationApiService";
-import { appClient, setAuthLogout } from "./ApiClient";
+import { appClient } from "./ApiClient";
 
 export const AuthContext = createContext();
 
@@ -14,38 +14,12 @@ export default function AuthProvider({ children }) {
   const [error, setError] = useState(null);
 
   const logout = useCallback(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("email");
     setAuthenticate(false);
     setToken(null);
     setEmail(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("email");
   }, []);
-
-  useEffect(() => {
-    setAuthLogout(logout);
-    const storedToken = localStorage.getItem("token");
-    const storedEmail = localStorage.getItem("email");
-
-    if (storedToken && storedEmail) {
-      setToken(storedToken);
-      setEmail(storedEmail);
-      setAuthenticate(true);
-    }
-    setLoading(false);
-
-    const requestInterceptor = appClient.interceptors.request.use((config) => {
-      if (token) {
-        config.headers.Authorization = token;
-      }
-      return config;
-    }, (error) => {
-      return Promise.reject(error);
-    });
-
-    return () => {
-      appClient.interceptors.request.eject(requestInterceptor);
-    };
-}, [token, logout]);
 
   const login = useCallback(async (email, password) => {
     try {
@@ -53,13 +27,12 @@ export default function AuthProvider({ children }) {
       setError(null);
       const response = await executeJwtAuthenticationService(email, password);
       if (response.status === 200) {
-        const jwtToken = "Bearer " + response.data.token;
-        setAuthenticate(true);
-        setEmail(email);
-        setToken(jwtToken);
-
+        const jwtToken = response.data.token;
         localStorage.setItem("token", jwtToken);
         localStorage.setItem("email", email);
+        setToken(jwtToken);
+        setEmail(email);
+        setAuthenticate(true);
         return true;
       } else {
         logout();
@@ -73,6 +46,32 @@ export default function AuthProvider({ children }) {
       setLoading(false);
     }
   }, [logout]);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const storedEmail = localStorage.getItem("email");
+
+    if (storedToken && storedEmail) {
+      setToken(storedToken);
+      setEmail(storedEmail);
+      setAuthenticate(true);
+    }
+    setLoading(false);
+
+    const requestInterceptor = appClient.interceptors.request.use((config) => {
+      const localToken = localStorage.getItem("token");
+      if (localToken) {
+        config.headers.Authorization = `Bearer ${localToken}`;
+      }
+      return config;
+    }, (error) => {
+      return Promise.reject(error);
+    });
+
+    return () => {
+      appClient.interceptors.request.eject(requestInterceptor);
+    };
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout, email, token, loading, error }}>
