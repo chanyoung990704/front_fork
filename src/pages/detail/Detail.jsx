@@ -160,7 +160,10 @@ const Detail = () => {
                         <FaRegHeart />
                     </button>
                 )
-            )}                                    {
+            )}   
+            <br/>
+            <br/>                                 
+            {
                 item.genres && item.genres.slice(0, 5).map((genre, i) => (
                     <span key={i} className="genres__item">{genre.name}</span>
                 ))
