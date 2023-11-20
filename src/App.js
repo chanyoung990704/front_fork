@@ -26,25 +26,25 @@ function App() {
         <AuthProvider>
             <BrowserRouter>
                 <LikedMoviesProvider>
-                <RecommendedMoviesProvider>
-                    <Header />
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/:category" element={<Catalog />} />
-                        <Route path="/:category/search/:keyword" element={<Catalog />} />
-                        <Route path="/:category/:id" element={<Detail />} />
-                        <Route path="/login" element={<LoginComponent />} />
-                        <Route path="/register" element={<SignupForm />} />
-                        <Route 
-                            path="/movieRecommend" 
-                            element={
-                                <AuthenticatedRoute>
-                                    <MovieForm />
-                                </AuthenticatedRoute>
-                            } 
-                        />
-                    </Routes>
-                </RecommendedMoviesProvider>
+                    <RecommendedMoviesProvider>
+                        <Header />
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/:category" element={<Catalog />} />
+                            <Route path="/:category/search/:keyword" element={<Catalog />} />
+                            <Route path="/:category/:id" element={<Detail />} />
+                            <Route path="/login" element={<LoginComponent />} />
+                            <Route path="/register" element={<SignupForm />} />
+                            <Route 
+                                path="/movieRecommend" 
+                                element={
+                                    <AuthenticatedRoute>
+                                        <MovieForm />
+                                    </AuthenticatedRoute>
+                                } 
+                            />
+                        </Routes>
+                    </RecommendedMoviesProvider>
                 </LikedMoviesProvider>
             </BrowserRouter>
         </AuthProvider>

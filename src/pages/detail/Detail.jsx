@@ -72,20 +72,19 @@ const Detail = () => {
     //댓글 작성 함수
     const fetchComments = async (movieId, page) => {
         try {
-            const response = await getMovieComment(movieId, page);
-            console.log(response);
-            // 가정: response.data가 댓글 배열을 포함하는 객체일 경우
-            if(response.data.comments){
-                setComments(response.data.comments);
-                setTotalPages(response.data.totalPages);
-            }
-            else
-                setComments([])
+          const response = await getMovieComment(movieId, page);
+          if (response.data && response.data.comments) {
+            setComments(response.data.comments);
+            setTotalPages(response.data.totalPages); // 총 페이지 수 업데이트
+          } else {
+            setComments([]);
+          }
         } catch (error) {
-            console.error('댓글을 가져오는 중 오류가 발생했습니다:', error);
-            setErrorMessage('댓글을 가져오는데 실패했습니다.');
+          console.error('댓글을 가져오는 중 오류가 발생했습니다:', error);
+          setErrorMessage('댓글을 가져오는데 실패했습니다.');
         }
-     };
+      };
+      
 
       // 페이지 번호를 클릭했을 때 호출될 함수
     const handlePageClick = (event) => {
@@ -97,17 +96,20 @@ const Detail = () => {
     
     //작성한 댓글 서버에 등록하는 함수
     const handleCommentSubmit = async () => {
-        if (!newComment.trim()) return; // 빈 댓글을 방지합니다.
+        if (!newComment.trim()) return;
         try {
-            // 서버로 새 댓글을 보내는 API를 호출합니다.
-            await postMovieComment(id, newComment); // id는 현재 영화의 ID입니다.
-            setNewComment(''); // 입력 필드 초기화합니다.
-            fetchComments(id, totalPages - 1); // 댓글 목록을 새로고침합니다.
+          await postMovieComment(id, newComment);
+          setNewComment('');
+          const response = await getMovieComment(id, 0); // 가정: 서버는 총 페이지 수를 반환
+          if (response.data && response.data.totalPages) {
+            fetchComments(id, response.data.totalPages - 1); // 새 댓글이 있는 마지막 페이지로 이동
+            setCurrentPage(response.data.totalPages - 1); // 현재 페이지 상태 업데이트
+          }
         } catch (error) {
-            console.error('댓글을 등록하는데 실패했습니다.', error);
-            setErrorMessage('댓글을 등록하는데 실패했습니다.');
+          console.error('댓글을 등록하는데 실패했습니다.', error);
+          setErrorMessage('댓글을 등록하는데 실패했습니다.');
         }
-    };
+      };
 
     //에러 처리 함수
     const handleError = (error) => {

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
-import './css/LoginComponent.css';
+import './css/SignupComponent.css';
 import PageHeader from '../components/page-header/PageHeader';
 
 export default function LoginComponent() {
@@ -48,27 +48,27 @@ export default function LoginComponent() {
     return (
         <>
             <PageHeader>
-                <div className="Login center bottom">
-                    {showFailMessage && <div className="errorMessage">Authentication Failed!</div>}
-                    <form className="LoginForm" onSubmit={handleSubmit}>
-                        {!showFailMessage && <h2 className='bottom'>Sign in</h2>}
+                <div className="SignupLogin center bottom">
+                    {showFailMessage && <div className="SignupErrorMessage">Authentication Failed!</div>}
+                    <form className="SignupLoginForm" onSubmit={handleSubmit}>
+                        {!showFailMessage && <h2 className='bottom'></h2>}
                         <div className='bottom'>
-                            <label>Email:</label>
-                            <input type="email" name="email" placeholder='yourEmail@email.com' value={email} onChange={handleEmailChange} required />
+                            <label htmlFor="email">Email:</label>
+                            <input id="email" type="email" name="email" placeholder='yourEmail@email.com' value={email} onChange={handleEmailChange} required />
                         </div>
                         <div className='bottom'>
-                            <label>Password:</label>
-                            <input type="password" name="password" placeholder='*******' value={password} onChange={handlePasswordChange} required />
+                            <label htmlFor="password">Password:</label>
+                            <input id="password" type="password" name="password" placeholder='*******' value={password} onChange={handlePasswordChange} required />
                         </div>
-                        <div className="buttonContainer">
-                            <button type="submit" className="btn btn-primary">
+                        <div className="SignupButtonContainer">
+                            <button type="submit" className="SignupButtonPrimary">
                                 Login
                             </button>
                         </div>
                     </form>
                     <h3 className='bottom'>Or register if you're new here!</h3>
-                    <div className="buttonContainer">
-                        <button onClick={handleRegister} className="btn btn-primary">
+                    <div className="SignupButtonContainer">
+                        <button onClick={handleRegister} className="SignupButtonPrimary">
                             Register
                         </button>
                     </div>

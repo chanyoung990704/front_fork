@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserLikedMovies } from '../api/PostApiService';
+import { getUserLikedMovies, recommendMovie } from '../api/PostApiService';
 import { useAuth } from './AuthContext';
-import { recommendMovie } from '../api/PostApiService';
 import { useLikedMovies } from './LikedMoviesContext';
 import { useRecommendedMovies } from './RecommendedMovieContext';
 
@@ -20,7 +19,10 @@ const MovieForm = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   // 추천 영화 목록
-  const { fetchRecommendedMovies } = useRecommendedMovies();
+  const { recommendedMovies, fetchRecommendedMovies } = useRecommendedMovies();
+
+  const [showLowLikesWarning, setShowLowLikesWarning] = useState(false);
+
 
 
   // 인증 관련
@@ -91,15 +93,25 @@ const MovieForm = () => {
       // API 요청을 보냅니다.
       const response = await recommendMovie(requestData);
       console.log(response.data);
-      // 성공적인 응답 후 추천 영화 목록 업데이트
+
+      // fetchRecommendedMovies가 비동기 함수라면 아래와 같이 처리합니다.
       await fetchRecommendedMovies();
-      navigate('/');
+
+      // 추천된 영화 목록을 로컬 스토리지에 저장
+      localStorage.setItem('recommendedMovies', JSON.stringify(recommendedMovies));
+
+      // 페이지 이동
+      navigate('/'); // 추천된 영화 목록을 보여주는 페이지로 이동
     } catch (error) {
       // 에러 처리
       console.error('Error during API request:', error);
     }
   };
 
+  const handleCloseWarning = () => {
+    setShowLowLikesWarning(false);
+    navigate('/');
+  };
   
 
   // UseEffect
@@ -111,10 +123,11 @@ const MovieForm = () => {
   // 좋아요 갯수 확인하고 일정 갯수 이하면 경고창 후 메인페이지로 리다이렉트
   useEffect(() => {
     if (!isLoading && likedMovies.length <= 5) {
-      alert("좋아요한 영화가 5개 이하입니다. 먼저 영화 좋아요를 해주세요.");
-      navigate('/');
+      setShowLowLikesWarning(true);
     }
-  }, [likedMovies, isLoading, navigate]);
+  }, [likedMovies, isLoading]);
+
+
 
 
 
@@ -180,6 +193,16 @@ const MovieForm = () => {
         <button type="submit" className='movieFormButton'>추천</button>
         </form>)
         }
+
+      {showLowLikesWarning && (
+        <div className="custom-warning-overlay">
+          <div className="custom-warning-modal">
+            <p>좋아요한 영화가 {likedMovies.length}개 입니다. 6개 이상의 영화 좋아요를 해주세요.</p>
+          <button onClick={handleCloseWarning} className='custom-warning-button'>확인</button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

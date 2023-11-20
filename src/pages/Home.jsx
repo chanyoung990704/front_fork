@@ -7,17 +7,47 @@ import HeroSlide from '../components/hero-slide/HeroSlide';
 import MovieList from '../components/movie-list/MovieList';
 import RecommendMovieList from '../components/movie-list/RecommendMovieList';
 import { useRecommendedMovies } from './RecommendedMovieContext';
+import { useLikedMovies } from './LikedMoviesContext';
 
-import { category, movieType, tvType } from '../api/tmdbApi';
+// import { category, movieType, tvType } from '../api/tmdbApi';
+import { category, movieType } from '../api/tmdbApi';
 
 const Home = () => {
-    const { recommendedMovies, isLoading } = useRecommendedMovies(); // 변경된 부분
-    const { isAuthenticated } = useAuth(); // isAuthenticated 상태 가져오기
+    const { recommendedMovies, isRecommendLoading } = useRecommendedMovies();
+    const { isAuthenticated } = useAuth();
+    const { likedMovies, isLoading: isLikedMoviesLoading } = useLikedMovies();
 
     return (
         <>
             <HeroSlide />
             <div className="container">
+
+            {isAuthenticated && !isLikedMoviesLoading && (
+                    likedMovies && likedMovies.length > 0 ? (
+                        <div className="section mb-3">
+                            <div className="section__header mb-2">
+                                <h2>Ur Likes</h2>
+                            </div>
+                            <RecommendMovieList category='movie' id={likedMovies} />
+                        </div>
+                    ) : (
+                        <div> </div>
+                    )
+                )}
+
+                {isAuthenticated && !isRecommendLoading && (
+                    recommendedMovies && recommendedMovies.length > 0 ? (
+                        <div className="section mb-3">
+                            <div className="section__header mb-2">
+                                <h2>Ur Recommendations</h2>
+                            </div>
+                            <RecommendMovieList category='movie' id={recommendedMovies} />
+                        </div>
+                    ) : (
+                        <div> </div>
+                    )
+                )}
+
                 <div className="section mb-3">
                     <div className="section__header mb-2">
                         <h2>Trending Movies</h2>
@@ -38,7 +68,7 @@ const Home = () => {
                     <MovieList category={category.movie} type={movieType.top_rated} />
                 </div>
 
-                <div className="section mb-3">
+                {/* <div className="section mb-3">
                     <div className="section__header mb-2">
                         <h2>Trending TV</h2>
                         <Link to="/tv">
@@ -46,22 +76,8 @@ const Home = () => {
                         </Link>
                     </div>
                     <MovieList category={category.tv} type={tvType.popular} />
-                </div>
+                </div> */}
 
-                {isAuthenticated && ( // 로그인 상태일 때만 렌더링
-                    <div className="section mb-3">
-                        <div className="section__header mb-2">
-                            <h2>Recommendation For You</h2>
-                        </div>
-                        {isLoading ? (
-                            <div>Is Loading...</div>
-                        ) : recommendedMovies && recommendedMovies.length > 0 ? (
-                            <RecommendMovieList category='movie' id={recommendedMovies} />
-                        ) : (
-                            <div>No recommendations available</div>
-                        )}
-                    </div>
-                )}
             </div>
         </>
     );

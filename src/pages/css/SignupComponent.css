@@ -1,0 +1,87 @@
+/* 넷플릭스 스타일 + 깔끔한 디자인을 위한 CSS */
+.SignupLogin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #fff;
+}
+
+.SignupLoginForm {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.SignupLoginForm label {
+    display: block;
+    margin-bottom: .5rem; /* 라벨과 입력 필드 사이의 간격 조정 */
+    color: #fff; /* 라벨 텍스트 색상을 흰색으로 변경 */
+}
+
+.SignupLoginForm input, .SignupLoginForm button {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+}
+
+.SignupLoginForm input {
+    background-color: #fff;
+    color: #333;
+    margin-bottom: 1.5rem; /* 입력 필드들 사이의 간격 조정 */
+
+}
+
+.SignupLoginForm button {
+    background-color: #e50914;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* 부드러운 색상 변화 효과 추가 */
+
+}
+
+.SignupErrorMessage {
+    color: red;
+    margin-bottom: 15px;
+}
+
+.SignupHeader, .SignupFooter {
+    text-align: center;
+}
+
+.SignupButtonContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.SignupButtonPrimary:hover {
+    background-color: #f40612;
+}
+
+.SignupButtonPrimary:hover {
+    background-color: #f40612; /* 버튼 호버 효과 변경 */
+    box-shadow: 0 0 10px #f40612; /* 호버 시에 그림자 효과 추가 */
+}
+
+.SignupButtonPrimary {
+    background-color: #e50914;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* 부드러운 색상 변화 효과 추가 */
+    border: none;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    width: auto; /* 버튼의 가로 길이를 자동으로 조정하여 줄임 */
+    padding: 10px 20px; /* 좌우 패딩을 추가하여 버튼 텍스트 주변 여백을 조정 */
+}
+
+.SignupButtonPrimary:hover {
+    background-color: #f40612; /* 버튼 호버 효과 변경 */
+    box-shadow: 0 0 10px #f40612; /* 호버 시에 그림자 효과 추가 */
+}

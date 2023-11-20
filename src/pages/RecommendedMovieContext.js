@@ -7,33 +7,34 @@ const RecommendedMoviesContext = createContext();
 export const useRecommendedMovies = () => useContext(RecommendedMoviesContext);
 
 export const RecommendedMoviesProvider = ({ children }) => {
-  const [recommendedMovies, setRecommendedMovies] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [recommendedMovies, setRecommendedMovies] = useState(() => {
+    const saved = localStorage.getItem('recommendedMovies');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [isRecommendLoading, setIsRecommendLoading] = useState(true);
   const { isAuthenticated } = useAuth();
 
-  // 추천 영화 불러오는 로직을 별도의 함수로 분리
   const fetchRecommendedMovies = useCallback(async () => {
     if (isAuthenticated) {
-      setIsLoading(true);
+      setIsRecommendLoading(true);
       try {
         const response = await getUserRecommendedMovies();
         setRecommendedMovies(response.data);
+        localStorage.setItem('recommendedMovies', JSON.stringify(response.data));
       } catch (error) {
         console.error('Error fetching recommended movies:', error);
       } finally {
-        setIsLoading(false);
+        setIsRecommendLoading(false);
       }
-    } else {
-      setRecommendedMovies([]);
     }
-}, [isAuthenticated]); // isAuthenticated를 의존성 배열에 추가
+  }, [isAuthenticated]);
 
-useEffect(() => {
+  useEffect(() => {
     fetchRecommendedMovies();
-  }, [fetchRecommendedMovies]); // 의존성 배열에 fetchRecommendedMovies 추가
+  }, [isAuthenticated, fetchRecommendedMovies]);
 
   return (
-    <RecommendedMoviesContext.Provider value={{ recommendedMovies, isLoading, setRecommendedMovies, fetchRecommendedMovies }}>
+    <RecommendedMoviesContext.Provider value={{ recommendedMovies, isRecommendLoading, setRecommendedMovies, fetchRecommendedMovies }}>
       {children}
     </RecommendedMoviesContext.Provider>
   );
