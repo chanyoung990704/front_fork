@@ -45,28 +45,33 @@ const Detail = () => {
       }, [isAuthenticated, setLikedMovies]);
 
       //좋아요 등록 함수
-      const likeIt = useCallback(async (id) => {
+      const likeIt = useCallback(async (movieId) => {
         if (isAuthenticated) {
-          try {
-            await likes(category, id)
-            fetchUserLikedMovies()
-          } catch (error) {
-            handleError(error); // 에러 처리를 위한 새로운 함수
-          }
+            try {
+                const newLikedMovies = [...likedMovies, movieId];
+                setLikedMovies(newLikedMovies);
+                localStorage.setItem('likedMovies', JSON.stringify(newLikedMovies));
+                await likes(category, movieId);
+            } catch (error) {
+                handleError(error);
+            }
         }
-      }, [isAuthenticated, category, fetchUserLikedMovies]);
+    }, [isAuthenticated, category, likedMovies, setLikedMovies]);
 
       //좋아요 취소 함수
-      const dislikeIt = useCallback(async (id) => {
+      const dislikeIt = useCallback(async (movieId) => {
         if (isAuthenticated) {
-          try {
-            await dislikes(category, id)
-            fetchUserLikedMovies()
-          } catch (error) {
-            handleError(error); // 에러 처리를 위한 새로운 함수
-          }
+            try {
+                const newLikedMovies = likedMovies.filter(id => id !== movieId);
+                setLikedMovies(newLikedMovies);
+                localStorage.setItem('likedMovies', JSON.stringify(newLikedMovies));
+                await dislikes(category, movieId);
+            } catch (error) {
+                handleError(error);
+            }
         }
-      }, [isAuthenticated, category, fetchUserLikedMovies]);
+    }, [isAuthenticated, category, likedMovies, setLikedMovies]);
+
 
 
     //댓글 작성 함수

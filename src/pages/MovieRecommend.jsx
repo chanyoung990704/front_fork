@@ -91,14 +91,13 @@ const MovieForm = () => {
   
     try {
       // API 요청을 보냅니다.
-      const response = await recommendMovie(requestData);
-      console.log(response.data);
-
-      // fetchRecommendedMovies가 비동기 함수라면 아래와 같이 처리합니다.
-      await fetchRecommendedMovies();
+      await recommendMovie(requestData);
 
       // 추천된 영화 목록을 로컬 스토리지에 저장
       localStorage.setItem('recommendedMovies', JSON.stringify(recommendedMovies));
+
+      // fetchRecommendedMovies가 비동기 함수라면 아래와 같이 처리합니다.
+      await fetchRecommendedMovies();
 
       // 페이지 이동
       navigate('/'); // 추천된 영화 목록을 보여주는 페이지로 이동
