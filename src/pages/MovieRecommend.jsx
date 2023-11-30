@@ -50,10 +50,10 @@ const MovieForm = () => {
 
 
 
-  const mainGenres = ['Genre', 'Director']; // 메인 선택: 장르 또는 감독
+  const mainGenres = ['Genre']; // 메인 선택: 장르 또는 감독
   const genres = [
     'Thriller', 'Western', 'Adventure', 'Fantasy', 'Drama',
-    '(no genres listed)', 'Animation', 'Action', 'Crime',
+    'Animation', 'Action', 'Crime',
     'Documentary', 'Comedy', 'Sci-Fi', 'War', 'Musical',
     'Film-Noir', 'Horror', 'Mystery', 'Children', 'Romance', 'IMAX'
   ];
