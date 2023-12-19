@@ -1,43 +1,42 @@
 import React, { useState, useEffect, useRef } from 'react';
-
 import { useParams } from 'react-router-dom';
-
 import tmdbApi from '../../api/tmdbApi';
 
+const MAX_VIDEOS = 2;
+
 const VideoList = props => {
-
-    const {category} = useParams();
-
+    const { category } = useParams();
     const [videos, setVideos] = useState([]);
 
     useEffect(() => {
         const getVideos = async () => {
             const res = await tmdbApi.getVideos(category, props.id);
-            setVideos(res.results.slice(0, 2));
-        }
+            setVideos(res.results.slice(0, MAX_VIDEOS));
+        };
         getVideos();
     }, [category, props.id]);
 
     return (
         <>
-            {
-                videos.map((item, i) => (
-                    <Video key={i} item={item}/>
-                ))
-            }
+            {videos.map(item => (
+                <Video key={item.id} item={item} />
+            ))}
         </>
     );
-}
+};
 
-const Video = props => {
-
-    const item = props.item;
-
+const Video = ({ item }) => {
     const iframeRef = useRef(null);
 
     useEffect(() => {
-        const height = iframeRef.current.offsetWidth * 9 / 16 + 'px';
-        iframeRef.current.setAttribute('height', height);
+        const updateIframeHeight = () => {
+            const height = iframeRef.current.offsetWidth * 9 / 16 + 'px';
+            iframeRef.current.style.height = height;
+        };
+
+        updateIframeHeight();
+        window.addEventListener('resize', updateIframeHeight);
+        return () => window.removeEventListener('resize', updateIframeHeight);
     }, []);
 
     return (
@@ -52,7 +51,7 @@ const Video = props => {
                 title="video"
             ></iframe>
         </div>
-    )
-}
+    );
+};
 
 export default VideoList;

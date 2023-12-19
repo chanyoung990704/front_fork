@@ -6,21 +6,26 @@ export const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
+const TOKEN_KEY = "token";
+const EMAIL_KEY = "email";
+
 export default function AuthProvider({ children }) {
-  const [isAuthenticated, setAuthenticate] = useState(!!localStorage.getItem("token"));
-  const [email, setEmail] = useState(localStorage.getItem("email"));
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [isAuthenticated, setAuthenticate] = useState(!!localStorage.getItem(TOKEN_KEY));
+  const [email, setEmail] = useState(localStorage.getItem(EMAIL_KEY));
+  const [token, setToken] = useState(localStorage.getItem(TOKEN_KEY));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // 로그아웃 함수
   const logout = useCallback(() => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("email");
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(EMAIL_KEY);
     setAuthenticate(false);
     setToken(null);
     setEmail(null);
   }, []);
 
+  // 로그인 함수
   const login = useCallback(async (email, password) => {
     try {
       setLoading(true);
@@ -28,8 +33,8 @@ export default function AuthProvider({ children }) {
       const response = await executeJwtAuthenticationService(email, password);
       if (response.status === 200) {
         const jwtToken = response.data.token;
-        localStorage.setItem("token", jwtToken);
-        localStorage.setItem("email", email);
+        localStorage.setItem(TOKEN_KEY, jwtToken);
+        localStorage.setItem(EMAIL_KEY, email);
         setToken(jwtToken);
         setEmail(email);
         setAuthenticate(true);
@@ -39,7 +44,7 @@ export default function AuthProvider({ children }) {
         return false;
       }
     } catch (error) {
-      setError(error);
+      setError("Login failed");
       logout();
       return false;
     } finally {
@@ -47,19 +52,12 @@ export default function AuthProvider({ children }) {
     }
   }, [logout]);
 
+  // 초기 상태 설정 및 인터셉터 구성
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedEmail = localStorage.getItem("email");
-
-    if (storedToken && storedEmail) {
-      setToken(storedToken);
-      setEmail(storedEmail);
-      setAuthenticate(true);
-    }
     setLoading(false);
 
     const requestInterceptor = appClient.interceptors.request.use((config) => {
-      const localToken = localStorage.getItem("token");
+      const localToken = localStorage.getItem(TOKEN_KEY);
       if (localToken) {
         config.headers.Authorization = `Bearer ${localToken}`;
       }

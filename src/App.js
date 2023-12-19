@@ -15,7 +15,7 @@ import AuthProvider, { useAuth } from './pages/AuthContext';
 import { LikedMoviesProvider } from './pages/LikedMoviesContext';
 import RecommendedMoviesProvider from './pages/RecommendedMovieContext';
 
-// AuthenticatedRoute 컴포넌트
+// 비로그인시 동작 처리를 위한 컴포넌트
 function AuthenticatedRoute({ children }) {
     const { isAuthenticated } = useAuth();
     return isAuthenticated ? children : <Navigate to="/login" />;

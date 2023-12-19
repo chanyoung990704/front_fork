@@ -12,6 +12,7 @@ const MovieForm = () => {
   const [selectionType, setSelectionType] = useState('');
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedDirector, setSelectedDirector] = useState('');
+
   //navigate
   const navigate = useNavigate();
 
@@ -21,9 +22,8 @@ const MovieForm = () => {
   // 추천 영화 목록
   const { recommendedMovies, fetchRecommendedMovies } = useRecommendedMovies();
 
+  // 경고 핸들러
   const [showLowLikesWarning, setShowLowLikesWarning] = useState(false);
-
-
 
   // 인증 관련
   const authContext = useAuth()
@@ -46,11 +46,8 @@ const MovieForm = () => {
       }
     }
   }, [isAuthenticated, setLikedMovies]);
-  
 
-
-
-  const mainGenres = ['Genre']; // 메인 선택: 장르 또는 감독
+  const mainGenres = ['Genre']; // 메인 선택: 장르 또는 감독 감독은 일단 제외
   const genres = [
     'Thriller', 'Western', 'Adventure', 'Fantasy', 'Drama',
     'Animation', 'Action', 'Crime',
@@ -71,10 +68,9 @@ const MovieForm = () => {
     const newSelectedGenres = event.target.checked
       ? [...selectedGenres, value]
       : selectedGenres.filter((genre) => genre !== value);
-  
+
     setSelectedGenres(newSelectedGenres);
   };
-  
 
   const handleDirectorChange = (event) => {
     setSelectedDirector(event.target.value);
@@ -88,7 +84,7 @@ const MovieForm = () => {
       director: selectedDirector,
       userLikes: likedMovies, // userMoviesData를 requestData에 추가
     };
-  
+
     try {
       // API 요청을 보냅니다.
       await recommendMovie(requestData);
@@ -111,7 +107,6 @@ const MovieForm = () => {
     setShowLowLikesWarning(false);
     navigate('/');
   };
-  
 
   // UseEffect
   // 사용자의 좋아요 영화 목록 가져오기
@@ -126,12 +121,6 @@ const MovieForm = () => {
     }
   }, [likedMovies, isLoading]);
 
-
-
-
-
-
-
   return (
     <div className="movie-form-container">
       {isLoading ? (
@@ -139,69 +128,61 @@ const MovieForm = () => {
       ) : (
         <form onSubmit={handleSubmit} className='movie-form'>
           <h2>영화 추천</h2>
-
-        <div>
+          <div>
             <h3>추천 유형 선택:</h3>
             <select value={selectionType} onChange={handleMainSelectionChange}
-            className='movieFormSelect'>
-            <option value="">선택하세요</option>
-            {mainGenres.map((type, index) => (
+              className='movieFormSelect'>
+              <option value="">선택하세요</option>
+              {mainGenres.map((type, index) => (
                 <option key={index} value={type}>{type}</option>
-            ))}
+              ))}
             </select>
-        </div>
-
-      {/* 세부 장르 선택 부분 */}
-      {selectionType === 'Genre' && (
-        <div className="genre-selection">
-          {genres.map((genre, index) => (
-            <React.Fragment key={index}>
-              <input
-                id={`genre-${index}`}
-                type="checkbox"
-                className="genre-checkbox"
-                value={genre}
-                onChange={handleGenreChange}
-                checked={selectedGenres.includes(genre)}
-              />
-              <label
-                htmlFor={`genre-${index}`}
-                className={`genre-label ${selectedGenres.includes(genre) ? 'checked' : ''}`}
-              >
-                {genre}
-              </label>
-            </React.Fragment>
-          ))}
-        </div>
-      )}
-
-
-        {selectionType === 'Director' && (
+          </div>
+          {selectionType === 'Genre' && (
+            <div className="genre-selection">
+              {genres.map((genre, index) => (
+                <React.Fragment key={index}>
+                  <input
+                    id={`genre-${index}`}
+                    type="checkbox"
+                    className="genre-checkbox"
+                    value={genre}
+                    onChange={handleGenreChange}
+                    checked={selectedGenres.includes(genre)}
+                  />
+                  <label
+                    htmlFor={`genre-${index}`}
+                    className={`genre-label ${selectedGenres.includes(genre) ? 'checked' : ''}`}
+                  >
+                    {genre}
+                  </label>
+                </React.Fragment>
+              ))}
+            </div>
+          )}
+          {selectionType === 'Director' && (
             <div>
-            <h3>감독 선택:</h3>
-            <select value={selectedDirector} onChange={handleDirectorChange}
-            className='movieFormSelect'>
+              <h3>감독 선택:</h3>
+              <select value={selectedDirector} onChange={handleDirectorChange}
+                className='movieFormSelect'>
                 <option value="">감독 선택</option>
                 {directors.map((director, index) => (
-                <option key={index} value={director}>{director}</option>
+                  <option key={index} value={director}>{director}</option>
                 ))}
-            </select>
+              </select>
             </div>
-        )}
-
-        <button type="submit" className='movieFormButton'>추천</button>
-        </form>)
-        }
-
+          )}
+          <button type="submit" className='movieFormButton'>추천</button>
+        </form>
+      )}
       {showLowLikesWarning && (
         <div className="custom-warning-overlay">
           <div className="custom-warning-modal">
             <p>좋아요한 영화가 {likedMovies.length}개 입니다. 6개 이상의 영화 좋아요를 해주세요.</p>
-          <button onClick={handleCloseWarning} className='custom-warning-button'>확인</button>
+            <button onClick={handleCloseWarning} className='custom-warning-button'>확인</button>
           </div>
         </div>
       )}
-
     </div>
   );
 };

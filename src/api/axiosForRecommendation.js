@@ -14,5 +14,4 @@ const TmdbApiForRecommendation = {
       },
   // ... 다른 API 함수들
 };
-
 export default TmdbApiForRecommendation;

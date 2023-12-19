@@ -6,30 +6,26 @@ import './css/SignupComponent.css';
 import PageHeader from '../components/page-header/PageHeader';
 
 export default function LoginComponent() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [form, setForm] = useState({ email: '', password: '' });
     const [showFailMessage, setShowFailMessage] = useState(false);
     const navigate = useNavigate();
-    const authContext = useAuth();
+    const { isAuthenticated, login } = useAuth();
 
     useEffect(() => {
-        if (authContext.isAuthenticated) {
-            navigate('/'); // 이미 로그인한 경우 홈페이지로 리다이렉트
+        if (isAuthenticated) {
+            navigate('/');
         }
-    }, [authContext.isAuthenticated, navigate]);
+    }, [isAuthenticated, navigate]);
 
-    function handleEmailChange(event) {
-        setEmail(event.target.value);
-    }
-
-    function handlePasswordChange(event) {
-        setPassword(event.target.value);
+    function handleChange(event) {
+        const { name, value } = event.target;
+        setForm(prevForm => ({ ...prevForm, [name]: value }));
     }
 
     async function handleSubmit(event) {
-        event.preventDefault(); // 폼의 기본 제출 이벤트 방지
+        event.preventDefault();
         try {
-            const loginSuccess = await authContext.login(email, password);
+            const loginSuccess = await login(form.email, form.password);
             if (loginSuccess) {
                 navigate('/');
             } else {
@@ -41,37 +37,28 @@ export default function LoginComponent() {
         }
     }
 
-    function handleRegister() {
-        navigate('/register');
-    }
-
     return (
         <>
             <PageHeader>
                 <div className="SignupLogin center bottom">
                     {showFailMessage && <div className="SignupErrorMessage">Authentication Failed!</div>}
                     <form className="SignupLoginForm" onSubmit={handleSubmit}>
-                        {!showFailMessage && <h2 className='bottom'></h2>}
                         <div className='bottom'>
                             <label htmlFor="email">Email:</label>
-                            <input id="email" type="email" name="email" placeholder='yourEmail@email.com' value={email} onChange={handleEmailChange} required />
+                            <input id="email" type="email" name="email" value={form.email} onChange={handleChange} required />
                         </div>
                         <div className='bottom'>
                             <label htmlFor="password">Password:</label>
-                            <input id="password" type="password" name="password" placeholder='*******' value={password} onChange={handlePasswordChange} required />
+                            <input id="password" type="password" name="password" value={form.password} onChange={handleChange} required />
                         </div>
                         <div className="SignupButtonContainer">
-                            <button type="submit" className="SignupButtonPrimary">
-                                Login
-                            </button>
+                            <button type="submit" className="SignupButtonPrimary">Login</button>
+                        </div>
+                        <h3 className='bottom'>Or register if you're new here!</h3>
+                        <div className="SignupButtonContainer">
+                            <button onClick={() => navigate('/register')} className="SignupButtonPrimary">Register</button>
                         </div>
                     </form>
-                    <h3 className='bottom'>Or register if you're new here!</h3>
-                    <div className="SignupButtonContainer">
-                        <button onClick={handleRegister} className="SignupButtonPrimary">
-                            Register
-                        </button>
-                    </div>
                 </div>
             </PageHeader>
         </>

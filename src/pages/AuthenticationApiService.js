@@ -1,16 +1,8 @@
 import { appClient } from "./ApiClient"
 
+// JWT 인증 실행
+export const executeJwtAuthenticationService = (email, password) => {
+    return appClient.post('/authenticate', { email, password });
+};
 
 
-
-export function executeBasicAuthenticationService(token){
-
-    return appClient.get('/basicauth', {
-        headers:{
-            Authorization: token
-        }
-    })
-}
-
-export const executeJwtAuthenticationService
-    = (email, password) => appClient.post('/authenticate', {email, password})
