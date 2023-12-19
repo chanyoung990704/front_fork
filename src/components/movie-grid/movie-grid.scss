@@ -15,24 +15,96 @@
     }
 }
 
-.movie-search {
+.autocomplete-container {
     position: relative;
     width: 100%;
     max-width: 500px;
+    background-color: #141414;
+    /* Netflix's dark background */
+    border-radius: 4px;
+    /* Netflix style is often less rounded */
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    /* Subtle shadow for depth */
+}
 
-    input {
-        width: 100%;
-        padding-right: 8rem;
+.autocomplete-input {
+    width: calc(100% - 3rem);
+    /* Adjust width to fit the button */
+    padding: 1rem;
+    border: none;
+    background-color: transparent;
+    color: #fff;
+    /* White text for visibility */
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.autocomplete-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 3rem;
+    /* Fixed width for the button */
+    height: 100%;
+    background-color: #e50914;
+    /* Netflix's red color */
+    color: #fff;
+    /* White text */
+    border: none;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    /* Smooth transition for hover effect */
+
+    &:hover {
+        background-color: #f40612;
+        /* Slightly darker red on hover */
     }
+}
 
-    button {
-        position: absolute;
-        right: 0;
-        top: 2px;
+.autocomplete-suggestions {
+    list-style-type: none;
+    margin-top: 0.5rem;
+    /* Slight space from the input */
+    padding: 0;
+    position: absolute;
+    width: 100%;
+    background: #141414;
+    /* Consistent with the Netflix theme */
+    color: #fff;
+    z-index: 1000;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    overflow: hidden;
+    /* Ensures the border-radius applies to children */
 
-        @include mobile {
-            right: 1px;
-            top: 1px;
+    li {
+        padding: 0.8rem 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        /* Smooth transition for hover effect */
+
+        &:hover {
+            background-color: #333;
+            /* Darker background on hover */
+        }
+    }
+}
+
+/* Adjust grid-template-columns and other properties for responsiveness */
+@include tablet {
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+@include mobile {
+    .autocomplete-container {
+        .autocomplete-button {
+            width: 2.5rem;
+            /* Slightly smaller button on mobile */
         }
     }
 }
