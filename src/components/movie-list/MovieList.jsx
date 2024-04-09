@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
 import './movie-list.scss';
 
 import { SwiperSlide, Swiper } from 'swiper/react';
-import { Link } from 'react-router-dom';
-
-import Button from '../button/Button';
-
 import tmdbApi, { category } from '../../api/tmdbApi';
-import apiConfig from '../../api/apiConfig';
 
 import MovieCard from '../movie-card/MovieCard';
 
@@ -36,7 +30,7 @@ const MovieList = props => {
             setItems(response.results);
         }
         getList();
-    }, []);
+    }, [props.category, props.id, props.type]);
 
     return (
         <div className="movie-list">
