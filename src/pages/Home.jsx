@@ -50,7 +50,7 @@ const SectionHeader = ({ title, link }) => (
     <div className="section__header mb-2">
         <h2>{title}</h2>
         <Link to={link}>
-            <OutlineButton className="small">View more</OutlineButton>
+            <OutlineButton className="small">View more!!</OutlineButton>
         </Link>
     </div>
 );
