@@ -15,15 +15,19 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '14' # 원하는 Node.js 버전을 지정하세요.
+
     - name: Install dependencies
       run: npm install
+
     - name: Build React app
       run: npm run build
+
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
         name: build
         path: build/
+
     - name: Login Docker
       uses: docker/login-action@v2
       with:
@@ -36,3 +40,26 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.AWS_PRIVATE_ACCESS_KEY }}
         aws-region: us-east-2
+
+    - name: Build docker image & Push
+      run: |
+        docker build -t chanyoungpark9974/urmovie_front .
+        docker push chanyoungpark9974/urmovie_front:latest
+
+    - name: Export docker image
+      run: docker save chanyoungpark9974/urmovie_front:latest > ./urmovie_front.tar
+
+    - name: Upload files to deploy.zip
+      run: |
+        zip urmovie_front.zip urmovie_front.tar deploy.sh appspec.yml
+        aws s3 cp urmovie_front.zip s3://urmovie-buckets/deploy/
+
+    - name: Trigger deployment to CodeDeploy
+      run: |
+        aws deploy create-deployment \
+          --application-name urmovie-backend-deploy \
+          --deployment-group-name spring-deploy-group \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --description "Deployment from GitHub" \
+          --region us-east-2 \
+          --s3-location bucket=urmovie-buckets,key=deploy/urmovie_front.zip,bundleType=zip
