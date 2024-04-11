@@ -96,6 +96,7 @@ const MovieGrid = props => {
   const updateSearchTerm = (newSearchTerm) => {
     setSearchTerm(newSearchTerm);
     setPage(1);
+    setItems([]); // 검색어가 바뀌었을 때 목록을 초기화합니다.
   }
 
   useEffect(() => {
@@ -114,50 +115,38 @@ const MovieGrid = props => {
         params.query = searchTerm;
         response = await tmdbApi.search(props.category, { params });
       }
-      setItems([...(page > 1 ? items : []), ...response.results]);
+      setItems(prevItems => [...(page > 1 ? prevItems : []), ...response.results.slice(0, 20)]); // 첫 페이지가 아니면 이전 항목을 유지하고, 20개의 결과만 추가합니다.
       setTotalPage(response.total_pages);
     }
     getList();
-  }, [props.category, searchTerm, page, items]);
+  }, [props.category, searchTerm, page]);
 
   const loadMore = async () => {
-    let response = null;
-    const params = { page: page + 1 };
-    if (!searchTerm) {
-      switch (props.category) {
-        case category.movie:
-          response = await tmdbApi.getMoviesList(movieType.upcoming, { params });
-          break;
-        default:
-          response = await tmdbApi.getTvList(tvType.popular, { params });
-      }
-    } else {
-      params.query = searchTerm;
-      response = await tmdbApi.search(props.category, { params });
+    if (page < totalPage) {
+      setPage(page + 1); // 페이지를 증가시키면 useEffect가 다시 실행됩니다.
     }
-    setItems([...items, ...response.results]);
-    setPage(page + 1);
   }
 
   return (
-    <>
-      <div className="movie-search">
-        <AutoComplete onSearchTermChange={updateSearchTerm} />
-      </div>
-      <div className="movie-grid">
-        {items.map((item, i) => (
-          <MovieCard category={props.category} item={item} key={i} />
-        ))}
-      </div>
-      {page < totalPage ? (
-        <div className="movie-grid__loadmore">
-          <OutlineButton className="small" onClick={loadMore}>
-            Load more
-          </OutlineButton>
+      <>
+        <div className="movie-search">
+          <AutoComplete onSearchTermChange={updateSearchTerm} />
         </div>
-      ) : null}
-    </>
+        <div className="movie-grid">
+          {items.map((item, i) => (
+              <MovieCard category={props.category} item={item} key={i} />
+          ))}
+        </div>
+        {page < totalPage ? (
+            <div className="movie-grid__loadmore">
+              <OutlineButton className="small" onClick={loadMore}>
+                Load more
+              </OutlineButton>
+            </div>
+        ) : null}
+      </>
   );
 }
 
 export default MovieGrid;
+
